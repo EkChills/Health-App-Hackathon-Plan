@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BST — Health App Hackathon Plan</title>
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --ground: #F7F4F4;
+    --surface: #FFFFFF;
+    --surface-2: #FBF8F8;
+    --ink: #1E1A1C;
+    --ink-2: #443A3E;
+    --muted: #6E6167;
+    --rule: #E4DCDE;
+    --rule-strong: #CFC2C6;
+    --accent: #8C2F45;
+    --accent-ink: #6E2337;
+    --accent-soft: #F2E4E7;
+    --ok: #2E6B4F;
+    --ok-soft: #E2EFE8;
+    --warn: #8A5D14;
+    --warn-soft: #F6ECD9;
+    --crit: #A82A24;
+    --crit-soft: #F8E3E1;
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #171416;
+      --surface: #1E1A1D;
+      --surface-2: #221D21;
+      --ink: #EFE8EA;
+      --ink-2: #CFC2C7;
+      --muted: #A3949A;
+      --rule: #332B2F;
+      --rule-strong: #4A3F44;
+      --accent: #E4899B;
+      --accent-ink: #F0AEBB;
+      --accent-soft: #38222A;
+      --ok: #6FBF95;
+      --ok-soft: #1D2E26;
+      --warn: #DDA84A;
+      --warn-soft: #302617;
+      --crit: #F08A82;
+      --crit-soft: #331E1D;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #171416;
+    --surface: #1E1A1D;
+    --surface-2: #221D21;
+    --ink: #EFE8EA;
+    --ink-2: #CFC2C7;
+    --muted: #A3949A;
+    --rule: #332B2F;
+    --rule-strong: #4A3F44;
+    --accent: #E4899B;
+    --accent-ink: #F0AEBB;
+    --accent-soft: #38222A;
+    --ok: #6FBF95;
+    --ok-soft: #1D2E26;
+    --warn: #DDA84A;
+    --warn-soft: #302617;
+    --crit: #F08A82;
+    --crit-soft: #331E1D;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16.5px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 5vw 8rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 74rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: 4.5rem 0 2.5rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+
+  .eyebrow .dot { color: var(--accent); }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 6.5vw, 4.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0 0 1.25rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .standfirst {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 44rem;
+    margin: 0;
+  }
+
+  /* ---------- thesis ---------- */
+
+  .thesis {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 3rem 0 0;
+    padding: 2rem 2.25rem;
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+  }
+
+  .thesis .label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  .thesis blockquote {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .thesis p {
+    margin: 0;
+    max-width: 46rem;
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+
+  /* ---------- sections ---------- */
+
+  section {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0 2.5rem;
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .code {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding-top: 0.55rem;
+  }
+
+  .body { min-width: 0; display: flex; flex-direction: column; gap: 1.15rem; }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.5rem 0 0;
+  }
+
+  p { margin: 0; max-width: 62ch; }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:focus-visible, .q:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  strong { font-weight: 650; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+
+  ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; max-width: 62ch; }
+  li::marker { color: var(--rule-strong); }
+
+  /* ---------- loop diagram ---------- */
+
+  .loop {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 0.6rem;
+    margin: 0.5rem 0;
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--rule-strong);
+    padding: 1rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .step.key { border-top-color: var(--accent); }
+
+  .step .n {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .step .t {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .step.key .t { color: var(--accent); }
+
+  .step .d { font-size: 0.86rem; color: var(--muted); line-height: 1.45; }
+
+  /* ---------- split columns ---------- */
+
+  .split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: 1rem;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 1.35rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .panel.hot { background: var(--accent-soft); border-color: var(--accent); }
+
+  .panel h4 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--accent-ink);
+  }
+
+  .panel ul { gap: 0.45rem; font-size: 0.92rem; }
+
+  /* ---------- tables ---------- */
+
+  .scroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--rule-strong);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td.t {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--accent);
+    font-size: 0.85rem;
+  }
+
+  td.k { font-weight: 620; white-space: nowrap; }
+
+  /* ---------- chips ---------- */
+
+  .chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .chip.must { background: var(--crit-soft); color: var(--crit); }
+  .chip.should { background: var(--warn-soft); color: var(--warn); }
+  .chip.wont { background: var(--ok-soft); color: var(--ok); }
+
+  .scopehead { display: flex; align-items: center; gap: 0.65rem; margin-top: 0.6rem; }
+  .scopehead span.txt { font-size: 0.9rem; color: var(--muted); }
+
+  /* ---------- screens ---------- */
+
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.6rem; }
+
+  .scr {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .scr.star { border-color: var(--accent); background: var(--surface-2); }
+
+  .scr .who {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .scr .nm { font-weight: 620; font-size: 0.95rem; }
+  .scr .ds { font-size: 0.83rem; color: var(--muted); line-height: 1.45; }
+  .scr .flag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; }
+
+  /* ---------- phases ---------- */
+
+  .phases { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .phase .when {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 0.15rem;
+  }
+
+  .phase .what { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .phase .hd { font-weight: 620; }
+  .phase .dt { font-size: 0.9rem; color: var(--ink-2); }
+
+  /* ---------- questions ---------- */
+
+  .qs { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .q {
+    display: flex;
+    gap: 0.85rem;
+    align-items: baseline;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1.1rem;
+  }
+
+  .q .mk { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); }
+  .q .tx { font-size: 0.95rem; }
+  .q .tx small { display: block; color: var(--muted); font-size: 0.83rem; margin-top: 0.15rem; }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    padding: 3rem 0 0;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    line-height: 1.9;
+  }
+
+  @media (max-width: 720px) {
+    section { grid-template-columns: 1fr; gap: 0.9rem; }
+    .code { padding-top: 0; }
+    .phase { grid-template-columns: 1fr; gap: 0.35rem; }
+    .thesis { padding: 1.5rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Health hackathon <span class="dot">/</span> Build plan v1 <span class="dot">/</span> 2–4 weeks <span class="dot">/</span> Web first</p>
+    <h1>BST — the record that <em>reads itself</em></h1>
+    <p class="standfirst">A photo of a lab report or a prescription goes in. Structured, verified health data comes out — explained in plain language for the patient, and handed to the doctor as a one-page brief.</p>
+  </header>
+
+  <div class="thesis">
+    <span class="label">Architecture thesis — say this line to the judges</span>
+    <blockquote>The model reads. The rules decide.</blockquote>
+    <p>AI does extraction and explanation. A deterministic engine makes every judgement that matters — what is out of range, what interacts, what is urgent. That split is the safety story, the credibility, and the thing that separates this from the six other AI health chatbots in the room.</p>
+  </div>
+
+  <section>
+    <div class="code">NG</div>
+    <div class="body">
+      <h2>Nigeria first</h2>
+      <p>Everything here assumes a Nigerian patient, a Nigerian lab, and a Nigerian clinic. That is not a limitation — it is the strongest thing about the pitch.</p>
+
+      <div class="panel hot">
+        <h4>The insight to lead with</h4>
+        <p style="font-size:0.95rem">A Nigerian patient’s records are scattered across a private lab, a GP, a teaching hospital and a pharmacy that share nothing with each other. So people already carry their own records — a folder, a plastic bag of printouts, photos in a WhatsApp chat. <strong>BST is not asking anyone to change their behaviour. It is digitising the folder they already carry.</strong> A patient-owned record is not a design compromise here; it is how Nigerian healthcare already works.</p>
+      </div>
+
+      <h3>Regulation — one slide, and verify it yourself first</h3>
+      <ul>
+        <li><strong>Nigeria Data Protection Act 2023</strong>, regulated by the NDPC. Health data is sensitive personal data requiring explicit consent — exactly what the ShareGrant in §07 provides.</li>
+        <li><strong>NHIA Act 2022</strong> made health insurance mandatory and expanded the HMO market. A policy tailwind worth naming: your future customers are growing because of legislation.</li>
+        <li>Confirm the current wording before you present. A judge who works in the sector will know it better than a summary does.</li>
+      </ul>
+
+      <h3>Who pays here</h3>
+      <p>Out-of-pocket spending dominates Nigerian healthcare, so a paid consumer app is not the business — patients will not pay. Sell B2B2C: <strong>private diagnostic lab chains</strong> first, then <strong>HMOs</strong>, then private clinics per seat.</p>
+
+      <h3>Who you will be compared to</h3>
+      <p><strong>Helium Health</strong> owns the hospital EHR layer — sold to facilities, and the institution owns the record. <strong>Healthtracka</strong> does at-home testing with digital results. Your position: <em>patient-owned and cross-facility.</em> Helium makes one hospital’s records digital; BST makes one person’s records portable across the four places they actually go.</p>
+
+      <h3>What this changes in the build</h3>
+      <ul>
+        <li>Android-dominant, and data costs real money. <strong>Compress images client-side before upload</strong> and tolerate a bad connection. An engineering requirement, not a nicety.</li>
+        <li>Seeded personas get Nigerian names, Nigerian lab formats — PCV, genotype, MP, widal — and Naira wherever money appears.</li>
+        <li>Test extraction on <strong>real Nigerian lab printouts</strong>, not American samples. The layouts differ, and that difference will break your OCR on stage.</li>
+        <li><strong>Nigerian Pidgin as a plain-language mode.</strong> It costs almost nothing — a variation on the explanation prompt you are already writing — and it will land harder with a Nigerian panel than anything else on this list.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§01</div>
+    <div class="body">
+      <h2>Why this wins the room</h2>
+      <p>The prize is sponsorship, not a trophy. The judges are scoring <strong>“would we fund this team”</strong>, which weights three things above cleverness.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>What they are really asking</th><th>How the plan answers it</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="k">Is the problem real?</td><td>Every patient has lab reports they cannot read. Every doctor loses the first five minutes of a consult reconstructing history. Neither is speculative.</td></tr>
+            <tr><td class="k">Can this team ship?</td><td>A deployed public URL on day 3, not day 20. Working software beats a beautiful deck.</td></tr>
+            <tr><td class="k">Is there a business?</td><td>Diagnostic labs, clinics and HMOs all have budget and a reason to pay. See §09.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The climax is the <strong>handoff</strong>: a crumpled lab photo goes up, ten seconds later there is a clean trend and a plain-language read, the patient taps Share, and the doctor’s screen fills with a clinical brief. Those forty seconds are the entire pitch.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§02</div>
+    <div class="body">
+      <h2>Two users, one shared record</h2>
+      <p>This is not a two-sided marketplace — resist that. It is one record with two views.</p>
+      <div class="split">
+        <div class="panel">
+          <h4>Patient — primary</h4>
+          <p style="font-size:0.92rem">Has documents, cannot read them, forgets what they were told, arrives at appointments unprepared.</p>
+          <p style="font-size:0.92rem;color:var(--muted)"><em>“Tell me what this result means and what I should do.”</em></p>
+        </div>
+        <div class="panel">
+          <h4>Clinician — the credibility half</h4>
+          <p style="font-size:0.92rem">Inherits a patient with no usable history and no time to build one.</p>
+          <p style="font-size:0.92rem;color:var(--muted)"><em>“Give me this person’s story in 30 seconds, and don’t make me trust an AI to do it.”</em></p>
+        </div>
+      </div>
+      <p>Design the doctor view <strong>skeptic-first</strong>: every AI-generated sentence is visibly labelled a draft, and every number links back to the document it was read from.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§03</div>
+    <div class="body">
+      <h2>The core loop</h2>
+      <div class="loop">
+        <div class="step"><span class="n">01</span><span class="t">Upload</span><span class="d">Photo, PDF, or typed by hand.</span></div>
+        <div class="step"><span class="n">02</span><span class="t">Extract</span><span class="d">AI reads the document into structured JSON with a confidence score per field.</span></div>
+        <div class="step key"><span class="n">03</span><span class="t">Verify</span><span class="d">Human confirms the fields beside a crop of the source image.</span></div>
+        <div class="step"><span class="n">04</span><span class="t">Decide</span><span class="d">Deterministic rules engine raises flags.</span></div>
+        <div class="step"><span class="n">05</span><span class="t">Act</span><span class="d">Patient view, doctor view, share grant.</span></div>
+      </div>
+      <p><strong>The verify step is non-negotiable.</strong> It costs one screen and it buys the answer to the question every serious judge will ask: <em>what happens when the AI is wrong?</em></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§04</div>
+    <div class="body">
+      <h2>The split</h2>
+      <p>Put this on a pitch slide verbatim. It is the strongest twenty seconds you have.</p>
+      <div class="split">
+        <div class="panel">
+          <h4>AI does — assistive only</h4>
+          <ul>
+            <li>Vision extraction: document image to structured JSON</li>
+            <li>Confidence score per field; low confidence forces human review</li>
+            <li>Plain-language explanation of an already-flagged value</li>
+            <li>Drafts the doctor’s summary <em>from structured fields only</em></li>
+          </ul>
+        </div>
+        <div class="panel hot">
+          <h4>AI never</h4>
+          <ul>
+            <li>Decides urgency</li>
+            <li>Diagnoses</li>
+            <li>Suggests a dose</li>
+          </ul>
+          <p style="font-size:0.88rem;margin-top:0.3rem">If the model hallucinates, a number is wrong and the user sees it next to the source image. The clinical judgement was never the model’s to make.</p>
+        </div>
+      </div>
+      <h3>Rules decide — deterministic, auditable, no model calls</h3>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Rule family</th><th>What it does</th><th>Source of truth</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Reference range</td><td>Flags high / low / critical, age- and sex-adjusted</td><td>Range table you seed</td></tr>
+            <tr><td class="k">Trend</td><td>Rate of change across readings; flags sustained drift</td><td>Your own math</td></tr>
+            <tr><td class="k">Interaction</td><td>Drug–drug interaction check</td><td>openFDA / RxNorm / DDInter</td></tr>
+            <tr><td class="k">Duplicate therapy</td><td>Two drugs, same class</td><td>Drug class map</td></tr>
+            <tr><td class="k">Dose sanity</td><td>Above max daily dose</td><td>Static dose table</td></tr>
+            <tr><td class="k">Red flag</td><td>Critical value triggers “seek care now”</td><td>Hardcoded, human-reviewed</td></tr>
+            <tr><td class="k">Adherence</td><td>Doses logged vs. prescribed</td><td>Arithmetic</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Keep the rules engine in its own module with <strong>zero model calls inside it</strong>, testable with plain fixtures. That is what makes the thesis true rather than a slogan.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§05</div>
+    <div class="body">
+      <h2>Scope</h2>
+
+      <div class="scopehead"><span class="chip must">Must</span><span class="txt">This is the demo. Nothing ships without it.</span></div>
+      <ul>
+        <li>Upload a lab report → extraction → verify → saved</li>
+        <li>Upload a prescription → medication list with interaction flags</li>
+        <li>Patient home: red flags, active meds, what to do today</li>
+        <li>Patient timeline: one marker charted over three or more readings</li>
+        <li>Share grant: a time-limited code or link</li>
+        <li>Doctor brief: one page, AI summary visibly marked as draft</li>
+        <li>Manual entry fallback for everything — your safety net on stage</li>
+        <li>Seeded personas with clinically plausible history</li>
+      </ul>
+
+      <div class="scopehead"><span class="chip should">Should</span><span class="txt">Only if week 3 is calm.</span></div>
+      <ul>
+        <li>Audit log — “Dr. Adeyemi viewed your record on 4 Mar”. Cheap, big trust win.</li>
+        <li>Doctor accepts or dismisses a flag and adds a note</li>
+        <li>“Explain like I’m not a doctor” toggle</li>
+        <li>Export the brief as a PDF</li>
+      </ul>
+
+      <div class="scopehead"><span class="chip wont">Won’t</span><span class="txt">Say this out loud so nobody drifts at 2am.</span></div>
+      <ul>
+        <li>No telemedicine or video. No wearables or device sync. No chat interface.</li>
+        <li>No payments. No native app. No appointment booking. No symptom checker.</li>
+        <li>No real patient data, ever — synthetic personas only.</li>
+      </ul>
+
+      <h3>“But what about a normal doctor consultation, without a report?”</h3>
+      <p>This will come up repeatedly. Split it into three things — two are already done, and the third is a different product.</p>
+      <div class="split">
+        <div class="panel">
+          <h4>Already supported</h4>
+          <p style="font-size:0.92rem">A consult with <strong>no documents at all</strong>. A patient with zero uploads still has a record: manually entered blood pressure, a symptom note, a medication list typed by hand. The share code works the same, and the doctor brief renders from whatever exists. Manual entry is a must-have precisely so the app is useful before anyone uploads anything. <strong>Nothing extra to build.</strong></p>
+        </div>
+        <div class="panel">
+          <h4>Cheap to add — async notes</h4>
+          <p style="font-size:0.92rem">The doctor already writes a note on screen 7. Let the patient see it and reply once. That is a consultation in a thin, defensible sense: advice attached to a record, in writing, with an audit trail. About half a day, since the note already exists as an object. <strong>If the team wants “consultation” in the demo, build this version.</strong></p>
+        </div>
+      </div>
+      <div class="panel hot">
+        <h4>Out of scope — live telemedicine</h4>
+        <ul>
+          <li>WebRTC, scheduling, availability, payments and dispute handling. That is the entire three weeks.</li>
+          <li>It needs <strong>doctor identity verification</strong>. You cannot connect Nigerian patients to people claiming to be doctors without checking MDCN registration — and a sector judge will ask inside thirty seconds.</li>
+          <li><strong>It does not demo well.</strong> Everyone in the room has seen a video call, and bad venue wifi kills it live.</li>
+          <li><strong>Nigeria already has funded telemedicine players.</strong> A three-week prototype loses that fight; a three-week prototype that makes records portable is in an open lane.</li>
+        </ul>
+        <p style="font-size:0.92rem"><strong>The resolution:</strong> put live consultation on the <strong>roadmap slide</strong>, not in the build. Your friends get their idea acknowledged, judges see you know where the product goes next, and it costs zero engineering days. “Here’s what we’d build with the sponsorship” is a slide you need anyway.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§06</div>
+    <div class="body">
+      <h2>Seven screens, four that matter</h2>
+      <div class="screens">
+        <div class="scr"><span class="who">Patient 01</span><span class="nm">Home</span><span class="ds">Answers “what should I do today?” Never an empty dashboard.</span></div>
+        <div class="scr star"><span class="who">Patient 02</span><span class="nm">Upload &amp; verify</span><span class="ds">Extracted fields beside the document crop.</span><span class="flag">★ demo-critical</span></div>
+        <div class="scr star"><span class="who">Patient 03</span><span class="nm">Timeline</span><span class="ds">Trend with the out-of-range band shaded, latest point emphasized.</span><span class="flag">★ demo-critical</span></div>
+        <div class="scr star"><span class="who">Patient 04</span><span class="nm">Share</span><span class="ds">Pick the scope, set an expiry, get a code.</span><span class="flag">★ demo-critical</span></div>
+        <div class="scr"><span class="who">Clinician 05</span><span class="nm">Enter code</span><span class="ds">Or pick from a patient list.</span></div>
+        <div class="scr star"><span class="who">Clinician 06</span><span class="nm">Brief</span><span class="ds">Problem list, meds and flags, key trends, AI draft in a distinct block.</span><span class="flag">★ demo-critical</span></div>
+        <div class="scr"><span class="who">Clinician 07</span><span class="nm">Verify &amp; note</span><span class="ds">Accept or dismiss flags, add a clinical note.</span></div>
+      </div>
+      <p>If you fall behind, screens 1, 5 and 7 can be thin. The four starred ones carry the demo.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§07</div>
+    <div class="body">
+      <h2>Consent and the share code</h2>
+      <p>The least obvious piece of the design, and the one doing the most work. Understand it before you build it.</p>
+
+      <h3>The problem</h3>
+      <p>A patient walks into a clinic. The doctor has never met them and has no account connected to them. <strong>How does that doctor see the record for the next twenty minutes, without the patient handing over their password?</strong></p>
+      <div class="panel">
+        <h4>Every obvious answer is bad</h4>
+        <ul>
+          <li><strong>Email a PDF</strong> — static, no trends, no flags, and the data now sits in a stranger’s inbox forever with no way to take it back.</li>
+          <li><strong>Give the doctor a login</strong> — requires pre-registering every clinic in the country before the app is useful. Dead on arrival.</li>
+          <li><strong>Patient logs in on the doctor’s computer</strong> — hands over the whole account, permanently, on someone else’s machine.</li>
+        </ul>
+      </div>
+
+      <h3>The mechanism</h3>
+      <p>Same idea as a shared document link with an expiry date, or a guest wifi password.</p>
+      <div class="loop">
+        <div class="step"><span class="n">01</span><span class="t">Tap share</span><span class="d">From the patient’s own record.</span></div>
+        <div class="step"><span class="n">02</span><span class="t">Pick scope</span><span class="d">Everything, labs only, or the last six months.</span></div>
+        <div class="step"><span class="n">03</span><span class="t">Set expiry</span><span class="d">Hours, not weeks. 24h is a sensible default.</span></div>
+        <div class="step key"><span class="n">04</span><span class="t">Code</span><span class="d">K7QM-2PX — read aloud, or shown as a QR.</span></div>
+        <div class="step"><span class="n">05</span><span class="t">Doctor enters it</span><span class="d">Record opens. Access dies on schedule.</span></div>
+      </div>
+      <p>Behind it is a single database row — a <code>ShareGrant</code> holding the code, the scope, an expiry and a revoked flag. Every time the doctor opens the record you write a line to <code>AuditLog</code>, and the patient later sees <em>“Dr. Adeyemi viewed your labs on 4 Mar at 10:12.”</em></p>
+
+      <h3>Why it earns its place</h3>
+      <ul>
+        <li><strong>The app works on day one.</strong> A code works for a walk-in clinic, a referral, a second opinion in another city, an emergency room. No pre-existing relationship, no clinic onboarding, no admin. That is the actual shape of how people see doctors.</li>
+        <li><strong>It is the consent story, made physical.</strong> Most teams answer “how do you handle privacy?” with “we encrypt everything.” You get to answer: the patient chooses who sees it, chooses how much, sets an expiry, can revoke it, and sees every access afterward. Demonstrable beats claimed — for about four hours of work.</li>
+        <li><strong>It is the demo transition.</strong> You need a believable reason to move from the patient screen to the doctor screen on stage. Without it you are alt-tabbing between two windows and hoping nobody wonders how the doctor got in.</li>
+        <li><strong>The patient stays in control.</strong> In a hospital system the institution owns the record. Here the patient owns it and lends it out. That is a real positioning line for the pitch.</li>
+      </ul>
+
+      <div class="panel hot">
+        <h4>Implementation note — say this unprompted to a technical judge</h4>
+        <p style="font-size:0.92rem">A short code alone is brute-forceable. Three cheap defenses: <strong>short expiry</strong> measured in hours; <strong>rate-limited</strong> attempts with a lock after about five failures; and <strong>bind on first claim</strong>, so once one clinician redeems the code it stops working for everyone else.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§08</div>
+    <div class="body">
+      <h2>Three weeks</h2>
+      <div class="phases">
+        <div class="phase">
+          <div class="when">Days 1–2</div>
+          <div class="what">
+            <span class="hd">Decide and deploy</span>
+            <span class="dt">Lock the wedge. Wireframe seven screens on paper. Write three seeded personas with real clinical arcs. Agree the API contract and stub it so the frontend never waits on the backend. <strong>Ship a public URL on day 2</strong> — deployment problems always surface late and always cost more than you budget.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when">Week 1</div>
+          <div class="what">
+            <span class="hd">The spine</span>
+            <span class="dt">Upload → extract → verify → persist. Rules engine v1: reference ranges and red flags. One marker charting end to end. Friday exit criterion: one document goes in and comes out flagged and charted.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when">Week 2</div>
+          <div class="what">
+            <span class="hd">The handoff</span>
+            <span class="dt">Share grant and consent flow. Doctor brief. Interaction and duplicate-therapy checks. Prescription extraction. Audit log.</span>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="when">Week 3</div>
+          <div class="what">
+            <span class="hd">Survive contact</span>
+            <span class="dt">Polish empty and error states. Make the seeded numbers real rather than invented — see §13 for how to do that with no clinician on the team. Rehearse the script five times. Record the fallback video. <strong>Freeze the code 48 hours before the demo</strong> and spend that time only on the pitch.</span>
+          </div>
+        </div>
+      </div>
+      <h3>Four parallel workstreams — put a name on each today</h3>
+      <ul>
+        <li><strong>A — Extraction pipeline:</strong> upload handling, model calls, JSON schema, confidence scoring</li>
+        <li><strong>B — Rules engine and data:</strong> range tables, drug data, flag generation, seed personas</li>
+        <li><strong>C — Patient UI:</strong> home, upload and verify, timeline, share</li>
+        <li><strong>D — Doctor UI and pitch:</strong> brief, notes, deck, script, demo video</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§09</div>
+    <div class="body">
+      <h2>Who pays</h2>
+      <p>They are deciding whether to fund you, so this section is not optional garnish.</p>
+      <p>Out-of-pocket spending dominates Nigerian healthcare, so a paid consumer app is not the business. Patients will not pay — sell to the organisations around them.</p>
+      <ul>
+        <li><strong>Private diagnostic lab chains first</strong> — Synlab, Clinix, Afriglobal, Union Diagnostics and their peers. They already print reports nobody understands. White-label BST as their results portal: they pay per report to look modern and to kill the “what does this mean?” phone calls.</li>
+        <li><strong>HMOs</strong> — Reliance Health, Hygeia, Avon, AXA Mansard. Fewer duplicate tests and better chronic-disease adherence are line items they already track, and the NHIA Act is growing their market for them.</li>
+        <li><strong>Private clinics and hospitals</strong>, per seat, justified by minutes saved per consult.</li>
+      </ul>
+      <p style="font-size:0.92rem;color:var(--muted)">Verify every company named here is still operating and still a fit before you put it on a slide.</p>
+      <p>Bring <strong>one real statistic</strong> about your market — a single credible number outperforms a paragraph of adjectives. And get <strong>one quote from one real doctor or patient</strong>. It is the cheapest credibility in the entire pitch.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§10</div>
+    <div class="body">
+      <h2>Three minutes on stage</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Time</th><th>Beat</th></tr></thead>
+          <tbody>
+            <tr><td class="t">0:00</td><td><strong>Hook.</strong> Hold up a real lab report. “Everyone in this room has received one of these. Almost nobody in this room can read one.”</td></tr>
+            <tr><td class="t">0:15</td><td><strong>Problem.</strong> Patient side: results they cannot interpret. Doctor side: five minutes of every consult spent reconstructing history.</td></tr>
+            <tr><td class="t">0:45</td><td><strong>Demo.</strong> Upload → extraction → dwell on the verify screen, this is the trust moment → flag fires → plain-language explanation.</td></tr>
+            <tr><td class="t">1:30</td><td><strong>Demo.</strong> Timeline showing the trend → Share → switch to the second screen → the doctor’s brief.</td></tr>
+            <tr><td class="t">2:15</td><td><strong>How.</strong> “The model reads. The rules decide.” Show the split table. Name the safety design.</td></tr>
+            <tr><td class="t">2:45</td><td><strong>Ask.</strong> Market number, who pays, what six months of sponsorship buys.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Two people: one narrates, one drives — never the same person. Rehearse the switch to the doctor screen; that transition is where live demos die.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§11</div>
+    <div class="body">
+      <h2>What breaks, and what you do about it</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Risk</th><th>Fallback</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Live OCR fails on a photo</td><td>Demo one pre-tested document; keep manual entry visible as a feature, not an apology</td></tr>
+            <tr><td class="k">Model latency kills the pacing</td><td>Skeleton loaders and streaming; rehearse talking over the wait</td></tr>
+            <tr><td class="k">Venue wifi dies</td><td>Local build on the laptop plus a recorded video on a USB stick</td></tr>
+            <tr><td class="k">Seeded data looks fake</td><td>Clinician checks every number in week 3</td></tr>
+            <tr><td class="k">Judge asks about regulation</td><td>One slide: synthetic data during build, consent via ShareGrant, encryption at rest, audit log, named regime for production</td></tr>
+            <tr><td class="k">Someone starts building a chatbot at 2am</td><td>Point at §05, “Won’t”</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§12</div>
+    <div class="body">
+      <h2>Which markers do you support?</h2>
+      <p>A <strong>marker</strong> is one measurable thing on a report — PCV, fasting blood sugar, genotype. A Nigerian lab printout carries 25 to 40 of them.</p>
+      <p>Supporting one <em>properly</em> means doing more than displaying the number. Per marker you need every name labs print it under, the units and their conversions, the normal range, where the danger lines sit, plain-language copy for high and for low, and what to advise. That is real work, and it is the part where being wrong can hurt someone. <strong>You cannot do forty of these in three weeks.</strong></p>
+      <p>So support <strong>three completely</strong>. Every other value gets extracted and displayed faithfully but not interpreted — <em>“Captured from your report. We don’t interpret this one yet.”</em> Honest, deliberate-looking, and read as discipline rather than a gap.</p>
+
+      <div class="panel hot">
+        <h4>The Nigerian shortcut</h4>
+        <p style="font-size:0.95rem">Nigerian lab reports <strong>print the reference range on the page</strong>, right beside the result. So don’t build a range table — <strong>extract the range from the document itself</strong> and compare the value against the range that lab printed. You never claim clinical authority, you never source ranges you can’t verify, and you get age- and sex-appropriate ranges for free because the lab already applied them.</p>
+      </div>
+
+      <h3>The three to pick</h3>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Marker</th><th>Why</th><th>Input path</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Fasting blood sugar</td><td>Ubiquitous, cheap, constantly ordered; diabetes climbing fast</td><td>Uploaded lab report</td></tr>
+            <tr><td class="k">PCV / haemoglobin</td><td>Anaemia is everywhere, and PCV is the term Nigerian labs actually print</td><td>Uploaded lab report</td></tr>
+            <tr><td class="k">Blood pressure</td><td>Very high hypertension prevalence — and it is not on a lab report</td><td>Manual entry</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Blood pressure earning its place through manual entry is deliberate: it exercises your second input path live on stage. Malaria and genotype are more culturally recognisable but they are one-off results — nothing to plot on a timeline.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="code">§13</div>
+    <div class="body">
+      <h2>Working without a clinician</h2>
+      <p>There is no doctor on the team. That is a real constraint, not a fatal one — but it has to change how you build, because inventing plausible-looking clinical data is exactly what a judge with a medical background will catch.</p>
+      <ul>
+        <li><strong>Take reference ranges from the source document.</strong> The big one — it removes your need for clinical authority almost entirely.</li>
+        <li><strong>Build seeded personas from real, redacted reports.</strong> Everyone has old test results at home, or family who do. Blank the names, keep the numbers and the layout. You get clinically real values <em>and</em> authentic Nigerian lab formats to test extraction against — which you need anyway.</li>
+        <li><strong>Label the provenance in the UI.</strong> “Reference range as printed on your report.” One line turns the weakness into a visible design principle.</li>
+        <li><strong>A pharmacist, nurse or medical student is enough</strong>, and far easier to find than a doctor. Thirty minutes over WhatsApp. Keep looking, but don’t block on it.</li>
+        <li><strong>Say it out loud if asked.</strong> “We have no clinician, so we designed the system not to need one — we never assert a normal range, we show the one the lab printed.” Far better than a shaky claim of clinical rigour.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Draft v1 · for team review · edit freely<br>
+    Companion files: PLAN.md (full text) · figjam-stickies.txt (paste into FigJam as stickies)
+  </footer>
+
+</div>
+
+</body>
+</html>

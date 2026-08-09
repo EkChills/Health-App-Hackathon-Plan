@@ -1,0 +1,224 @@
+■ THE PRODUCT
+BST — name locked
+Photo of a lab report or prescription in. Structured, verified health data out.
+Plain-language read for the patient. One-page clinical brief for the doctor.
+THESIS: The model reads. The rules decide.
+Demo climax = the handoff. Patient shares, doctor's screen fills.
+
+■ USERS
+PATIENT (primary): has documents, can't read them, forgets what he was told
+Patient's job: "Tell me what this means and what I should do"
+CLINICIAN (secondary): inherits a patient with no usable history
+Clinician's job: "Give me the story in 30 seconds, and don't make me trust an AI"
+NOT a two-sided marketplace. Two views, ONE shared record.
+Design the doctor view for a skeptic
+
+■ CORE LOOP
+1. UPLOAD — photo, PDF, or typed by hand
+2. EXTRACT — AI reads the document into JSON
+3. VERIFY — human confirms fields next to a crop of the source
+4. DECIDE — deterministic rules engine raises flags
+5. ACT — patient view + doctor view
+The VERIFY step is non-negotiable. It is the answer to "what if the AI is wrong?"
+
+■ AI DOES (assistive only)
+Vision extraction: document image to structured JSON
+Confidence score per field — low confidence forces human review
+Plain-language explanation of an already-flagged value
+Drafts the doctor's summary FROM STRUCTURED FIELDS ONLY
+AI never decides urgency
+AI never diagnoses
+AI never suggests a dose
+
+■ RULES DECIDE (deterministic, auditable, no model)
+Reference range — high / low / critical, age and sex adjusted
+Trend — rate of change across readings
+Drug–drug interaction — openFDA / RxNorm / DDInter
+Duplicate therapy — two drugs, same class
+Dose sanity — above max daily dose
+Red flag — critical value triggers "seek care now"
+Adherence — doses logged vs prescribed
+Rules engine lives in its own module with ZERO model calls inside it
+
+■ MUST HAVE (the demo)
+Upload lab report → extract → verify → save
+Upload prescription → med list with interaction flags
+Patient home: red flags, active meds, what to do today
+Patient timeline: one marker charted over 3+ readings
+Share grant: time-limited code or link
+Doctor brief: one page, AI summary visibly marked as draft
+Manual entry fallback for everything (stage safety net)
+Seeded personas with clinically plausible history
+
+■ SHOULD HAVE (only if week 3 is calm)
+Audit log — "Dr. Adeyemi viewed your record on 4 Mar"
+Doctor can accept or dismiss a flag and add a note
+"Explain like I'm not a doctor" toggle
+Export brief as PDF
+
+■ WON'T HAVE (say it out loud so nobody drifts)
+No telemedicine or video
+No wearables or device sync
+No chat interface
+No payments
+No native app
+No real patient data, ever
+No appointment booking
+No symptom checker
+
+■ "WHAT ABOUT NORMAL DOCTOR CONSULTATION?" — this will keep coming up
+ALREADY WORKS: a consult with no documents at all
+Patient with zero uploads still has a record — typed BP, symptom note, meds
+Share code works the same. Doctor brief renders from whatever exists.
+Manual entry exists so the app is useful before anyone uploads anything
+CHEAP TO ADD: async notes. Doctor writes, patient reads, patient replies once.
+Async notes = advice attached to a record, in writing, with an audit trail
+Half a day of work — the Note object already exists on screen 7
+If we want "consultation" in the demo, THIS is the version we build
+OUT OF SCOPE: live video / realtime chat telemedicine
+Why: WebRTC + scheduling + payments + disputes = our entire three weeks
+Why: needs MDCN doctor verification. Sector judge asks this in 30 seconds.
+Why: does not demo well. Everyone has seen a video call. Bad wifi kills it.
+Why: Nigeria already has funded telemedicine players. We lose that fight.
+Records portability is an OPEN lane. Telemedicine is a crowded one.
+RESOLUTION: live consultation goes on the ROADMAP SLIDE, not in the build
+Costs zero engineering days and we need that slide anyway
+
+■ SCREENS
+PATIENT 1 — Home: what should I do today (never an empty dashboard)
+PATIENT 2 — Upload & verify: fields beside the document crop ★demo-critical
+PATIENT 3 — Timeline: trend with out-of-range band shaded ★demo-critical
+PATIENT 4 — Share: pick scope, set expiry, get a code ★demo-critical
+DOCTOR 5 — Enter code / patient list
+DOCTOR 6 — Brief: problem list, meds, flags, trends, AI draft ★demo-critical
+DOCTOR 7 — Verify & note: accept or dismiss flags
+
+■ SHARE / CONSENT — the least obvious piece, doing the most work
+PROBLEM: doctor has never met this patient and has no account linked to them
+How does the doctor see the record for 20 min without getting the password?
+Email a PDF → static, no trends, and it lives in a stranger's inbox forever
+Give the doctor a login → needs every clinic pre-registered. Dead on arrival.
+Patient logs in on the doctor's PC → hands over the whole account, permanently
+SOLUTION: patient generates a short code. Like a shared link with an expiry.
+Patient picks SCOPE: everything / labs only / last 6 months
+Patient picks EXPIRY: hours, not weeks. 24h default.
+Code shown as text + QR. Read it out or hold up the phone.
+Doctor types the code. Record opens. Access dies on schedule.
+Every doctor view writes to AuditLog — patient sees who looked and when
+WHY: works day one for walk-ins, referrals, second opinions, the ER
+WHY: it is the consent story made physical, not just "we encrypt everything"
+WHY: it is the demo transition — the believable reason to switch screens
+WHY: the patient owns the record and lends it out. Hospitals do the opposite.
+SECURITY: short expiry + rate-limit attempts + bind to first clinician who claims it
+Say the security note unprompted if a technical judge is in the room
+
+■ DATA MODEL
+User — role: patient or clinician
+PatientProfile — dob, sex, conditions, allergies
+Document — file, kind, status, raw_extraction, confidence
+Observation — code, value, unit, ref_low, ref_high, taken_at
+Medication — name, rxnorm_code, dose, frequency, dates
+Flag — rule_id, severity, message
+ShareGrant — code, scope, expires_at, revoked_at
+AuditLog — actor, patient, action, timestamp
+ShareGrant + AuditLog = the two tables that prove you thought about consent
+
+■ TIMELINE
+DAYS 1–2: lock the wedge, wireframe 7 screens on paper, write 3 personas
+DAYS 1–2: SHIP A PUBLIC URL. Day 2, not day 20.
+DAY 2: agree the API contract and stub it so frontend never waits on backend
+WEEK 1: upload → extract → verify → persist. Ranges + red flags. One chart.
+WEEK 1 EXIT: one document goes in, comes out flagged and charted
+WEEK 2: share grant, doctor brief, interactions, prescriptions, audit log
+WEEK 3: polish empty + error states, clinician sanity-checks the seed data
+WEEK 3: rehearse the script five times, record the fallback video
+FREEZE THE CODE 48 HOURS BEFORE DEMO
+
+■ WORKSTREAMS — put a name on each
+A — Extraction pipeline: upload, model calls, JSON schema, confidence
+B — Rules engine + data: range tables, drug data, seed personas
+C — Patient UI: home, upload/verify, timeline, share
+D — Doctor UI + pitch: brief, notes, deck, script, demo video
+Owner A = ?
+Owner B = ?
+Owner C = ?
+Owner D = ?
+
+■ DEMO SCRIPT — 3 minutes
+0:00 HOOK — hold up a real lab report. "Nobody in this room can read one of these."
+0:15 PROBLEM — patient can't interpret. Doctor loses 5 min rebuilding history.
+0:45 DEMO — upload, extract, DWELL ON VERIFY, flag fires, plain-language read
+1:30 DEMO — timeline trend, then Share, then switch to the doctor screen
+2:15 HOW — "the model reads, the rules decide" + the split table + safety design
+2:45 ASK — market number, who pays, what 6 months of sponsorship buys
+Two people: one narrates, one drives. Never the same person.
+Rehearse the screen switch. That transition is where live demos die.
+
+■ NIGERIA FIRST — the framing for everything
+Records are scattered across lab, GP, teaching hospital, pharmacy
+None of them share anything with each other
+So Nigerians ALREADY carry their own records — folder, plastic bag, WhatsApp
+We are not changing behaviour. We are digitising the folder they carry.
+Patient-owned is not a compromise here. It is how it already works.
+LAW: Nigeria Data Protection Act 2023, regulator NDPC — verify before pitching
+LAW: health data = sensitive personal data, needs explicit consent
+LAW: NHIA Act 2022 made insurance mandatory — HMO market is growing for us
+COMPARED TO: Helium Health = hospital EHR, institution owns the record
+COMPARED TO: Healthtracka = at-home testing with digital results
+OUR POSITION: patient-owned and cross-facility, not facility-owned
+Helium digitises one hospital. We make one person's records portable.
+BUILD: Android-dominant and data costs money — compress images before upload
+BUILD: test OCR on real Nigerian printouts, not American samples
+BUILD: personas get Nigerian names, Naira, and PCV / genotype / MP / widal
+IDEA: Nigerian Pidgin plain-language mode. Cheap to build, lands hard.
+
+■ BUSINESS — they are deciding whether to fund you
+Out-of-pocket dominates Nigerian health spending — patients will NOT pay
+So sell B2B2C, never a paid consumer app
+Labs pay first: Synlab, Clinix, Afriglobal, Union Diagnostics
+White-label us as their results portal on reports they already print
+HMOs second: Reliance Health, Hygeia, Avon, AXA Mansard
+Private clinics third: per seat, justified by minutes saved per consult
+Verify every company named is still operating before it goes on a slide
+Bring ONE real market statistic. One number beats a paragraph.
+Get ONE quote from ONE real doctor or patient. Cheapest credibility in the pitch.
+
+■ RISKS + FALLBACKS
+OCR fails live → demo a pre-tested document, keep manual entry as a feature
+Model latency → skeleton loaders, rehearse talking over the wait
+Wifi dies → local build on the laptop + recorded video on a USB stick
+Seed data looks fake → clinician checks every number in week 3
+Regulation question → one slide: synthetic data, consent, encryption, audit log
+Someone starts building a chatbot at 2am → point at WON'T HAVE
+
+■ MARKERS — what we interpret vs what we just show
+A "marker" = one measurable thing on a report. PCV, FBS, genotype.
+A Nigerian lab printout carries 25–40 markers on one page
+Supporting one PROPERLY = names, units, ranges, danger lines, copy, advice
+That is real work per marker. We cannot do 40 in three weeks.
+DECISION: support 3 completely, extract-and-show the rest uninterpreted
+"Captured from your report. We don't interpret this one yet."
+SHORTCUT: Nigerian lab reports PRINT the reference range on the page
+So extract the range from the document. Don't build a range table.
+We never assert a normal range — we show the one the lab printed
+MARKER 1: Fasting blood sugar — ubiquitous, cheap, diabetes climbing
+MARKER 2: PCV / haemoglobin — anaemia everywhere, PCV is what labs print
+MARKER 3: Blood pressure — high prevalence, and NOT on a lab report
+BP comes in by manual entry — exercises our second input path on stage
+Malaria and genotype are recognisable but one-off. Nothing to plot.
+
+■ NO CLINICIAN ON THE TEAM — design around it
+Inventing plausible clinical data is what a medical judge will catch
+Take reference ranges from the source document (see MARKERS)
+Build personas from REAL redacted reports — we all have old results at home
+Real reports give us real values AND real Nigerian layouts to test OCR on
+Label provenance in the UI: "Reference range as printed on your report"
+A pharmacist, nurse or med student is enough. Easier to find than a doctor.
+30 minutes over WhatsApp. Keep looking, but don't block on it.
+If asked: "we designed the system not to need a clinician"
+
+■ STILL OPEN
+Who do we know studying medicine, pharmacy or nursing?
+
+■ PARKING LOT
+Add your ideas here →

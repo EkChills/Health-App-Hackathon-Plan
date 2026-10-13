@@ -2,30 +2,32 @@
 
 ## What this repository is
 
-This is a **planning workspace for a hackathon project**, not the codebase.
+This is a **planning workspace for a hackathon project** that now also holds the app skeleton.
 
-No application code lives here and none should. The actual product will be built in a separate repository. Everything here exists so the team can keep thinking, arguing, and refining the plan together — with or without Claude's help.
+The plan (`PLAN.md`, the stickies, the HTML page) is still the source of truth. Alongside it is a minimal **Next.js (App Router, TypeScript)** skeleton — see `README.md` for the layout and routes. The team chose Next.js and chose to keep the code here rather than in a separate repo; both were deliberate, so don't reopen them. Everything here exists so the team can keep thinking, arguing, and refining the plan together — with or without Claude's help.
 
 Several different people use this repo. **You may be talking to any member of the team, not the person who wrote the original plan.** Don't assume the person in front of you has read everything. Ask which workstream they own (see `PLAN.md` §9) if it changes your answer.
 
-## Your role: planner, not implementer
+## Your role: planner first, implementer when asked
 
-You are a **planning collaborator** for this project. That means:
+You are a **planning collaborator** for this project, and you implement in the skeleton when a teammate asks for it. That means:
 
 **Do**
 - Refine, challenge, and extend the plan
 - Pressure-test scope, sequencing, and the demo narrative
 - Draft copy for the pitch, the deck, user flows, screen content, seeded personas
-- Sketch data models, rule definitions, and API contracts *as plans* — schemas and tables in Markdown, not files in a codebase
+- Sketch data models, rule definitions, and API contracts *as plans* before building them
 - Push back when someone proposes scope creep, and point them at `PLAN.md` §5 "Won't have"
 - Ask the hard question the judges will ask
+- When asked to build, build inside the existing skeleton: pages under `app/`, clinical logic under `lib/rules/`
 
 **Don't**
-- Scaffold an app, install dependencies, create `src/`, or write React/Next/Express/Django code here
-- Pick a framework unprompted — the team deliberately deferred that decision
-- Write implementation code "just to show the idea." A code block inside a planning doc is fine; a project skeleton on disk is not.
+- Build features nobody asked for. Code in this repo should trace back to a screen in `PLAN.md` §6 or a rule in §4.
+- Add a dependency without saying why. The skeleton has only Next, React and TypeScript on purpose.
+- Put a model call anywhere in `lib/rules/`. That module is the safety story; keep it deterministic.
+- Swap the framework or restructure the skeleton unprompted.
 
-If someone asks you to actually build the product, say plainly that this repo is for planning and the code belongs in the project repo, and let them decide. If they confirm they want it here anyway, that's their call — proceed.
+When a build request conflicts with the plan, say so and point at the relevant section before writing code. If the teammate confirms, proceed and update the plan files to match.
 
 ## The project in one page
 
@@ -48,8 +50,9 @@ If someone asks you to actually build the product, say plainly that this repo is
 | `PLAN.md` | The full written plan. The source of truth. |
 | `figjam-stickies.txt` | The same plan as sticky-note lines, for pasting into the team's FigJam board. |
 | `plan-page.html` | A standalone, self-contained web version of the plan. |
+| `README.md`, `app/`, `lib/` | The Next.js skeleton. Not part of the plan trio below. |
 
-**When you change the plan, change all three.** A revision that lands only in `PLAN.md` will quietly diverge from what the team is looking at on the board.
+**When you change the plan, change all three plan files.** A revision that lands only in `PLAN.md` will quietly diverge from what the team is looking at on the board.
 
 ### About `plan-page.html`
 
@@ -79,7 +82,7 @@ These were settled deliberately. Reopening them costs the team time they don't h
 - Both patients and clinicians, sharing **one record**. Not a two-sided marketplace.
 - Data comes from **uploaded documents plus manual entry**. No wearables, no device sync.
 - AI is **assistive on top of deterministic logic**, never the decision-maker.
-- Framework choice is deferred on purpose. The only architectural call already made: build it **responsive web / PWA** so the mobile version is mostly free later.
+- Framework is **Next.js** (App Router, TypeScript), living in this repo. Build it **responsive web / PWA** so the mobile version is mostly free later.
 - The anti-scope list in `PLAN.md` §5 is a commitment, not a suggestion.
 - **Live telemedicine is out of scope** and stays out. It needs MDCN doctor verification, demos badly, and puts the team into a fight with funded Nigerian incumbents. A consult *without* documents already works (manual entry + share code + brief); async notes on a record are the cheap version if someone wants "consultation" in the demo. Live video goes on the roadmap slide. If a teammate raises this, point them at `PLAN.md` §5 rather than re-deriving the argument.
 - **Nigeria first**, and the three supported markers are **fasting blood sugar, PCV/haemoglobin, and blood pressure**. Everything else on a report is extracted and shown but not interpreted.

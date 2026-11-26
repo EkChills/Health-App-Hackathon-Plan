@@ -50,6 +50,7 @@ When a build request conflicts with the plan, say so and point at the relevant s
 | `PLAN.md` | The full written plan. The source of truth. |
 | `figjam-stickies.txt` | The same plan as sticky-note lines, for pasting into the team's FigJam board. |
 | `plan-page.html` | A standalone, self-contained web version of the plan. |
+| `API.md` | The API contract between workstreams. Keep it consistent with `PLAN.md` §8 data model. |
 | `README.md`, `app/`, `lib/` | The Next.js skeleton. Not part of the plan trio below. |
 
 **When you change the plan, change all three plan files.** A revision that lands only in `PLAN.md` will quietly diverge from what the team is looking at on the board.
@@ -92,6 +93,7 @@ The team also decided **not** to track who owns the pitch or who the clinician c
 ## Open — push on these
 
 1. Does anyone know a medical, pharmacy or nursing student for a 30-minute sanity check? Worth asking, but the plan must not depend on the answer.
+2. Blood pressure comes from manual entry, so there is no lab-printed range to compare against. Cite one named published guideline, or show BP unflagged? See `API.md` §8.
 
 ## House rules
 

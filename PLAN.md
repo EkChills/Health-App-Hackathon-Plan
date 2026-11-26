@@ -238,10 +238,15 @@ Observation     patient_id, document_id, code, label, value, unit,
 Medication      patient_id, document_id, name, rxnorm_code, dose, frequency,
                 start_date, end_date
 Flag            patient_id, rule_id, severity(info|warn|critical),
-                message, observation_id?, medication_id?, created_at
+                message, observation_id?, medication_id?, created_at,
+                review_action?(accepted|dismissed), review_reason?, reviewed_at?
 ShareGrant      patient_id, clinician_id?, code, scope, expires_at, revoked_at
 AuditLog        actor_id, patient_id, action, target, at
+Note            patient_id, author(clinician|patient), author_name, body,
+                reply_to?, created_at
 ```
+
+The full request and response shapes are in `API.md`.
 
 `ShareGrant` and `AuditLog` are the two tables that make a judge think you've thought about consent — see §7 for why they matter more than their size suggests. A couple of hours of work each. Build them.
 
@@ -272,7 +277,7 @@ Four parallel tracks so nobody blocks anybody:
 - **C — Patient UI:** home, upload/verify, timeline, share
 - **D — Doctor UI + pitch:** brief, notes, and the deck / script / demo video
 
-Agree the **API contract between A/B and C/D on day 2** and stub it, so the frontend never waits on the backend.
+Agree the **API contract between A/B and C/D on day 2** and stub it, so the frontend never waits on the backend. The draft is in `API.md`. It still needs one team decision: where blood pressure thresholds come from, since manual entry has no lab-printed range.
 
 ---
 

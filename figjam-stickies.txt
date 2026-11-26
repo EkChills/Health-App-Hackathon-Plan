@@ -120,15 +120,18 @@ PatientProfile — dob, sex, conditions, allergies
 Document — file, kind, status, raw_extraction, confidence
 Observation — code, value, unit, ref_low, ref_high, taken_at
 Medication — name, rxnorm_code, dose, frequency, dates
-Flag — rule_id, severity, message
+Flag — rule_id, severity, message, clinician review (accept / dismiss)
 ShareGrant — code, scope, expires_at, revoked_at
 AuditLog — actor, patient, action, timestamp
+Note — clinician note on the record, patient can reply once
 ShareGrant + AuditLog = the two tables that prove you thought about consent
 
 ■ TIMELINE
 DAYS 1–2: lock the wedge, wireframe 7 screens on paper, write 3 personas
 DAYS 1–2: SHIP A PUBLIC URL. Day 2, not day 20.
 DAY 2: agree the API contract and stub it so frontend never waits on backend
+API contract draft is in API.md — needs sign-off from all four workstreams
+OPEN: blood pressure has no printed range — where do its thresholds come from?
 WEEK 1: upload → extract → verify → persist. Ranges + red flags. One chart.
 WEEK 1 EXIT: one document goes in, comes out flagged and charted
 WEEK 2: share grant, doctor brief, interactions, prescriptions, audit log

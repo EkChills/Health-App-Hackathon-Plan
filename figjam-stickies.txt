@@ -39,8 +39,9 @@ Dose sanity — above max daily dose
 Red flag — critical value triggers "seek care now"
 Adherence — doses logged vs prescribed
 Rules engine lives in its own module with ZERO model calls inside it
-Stack: Next.js (App Router, TypeScript), responsive web / PWA
-Skeleton built: one route per screen, rules engine in lib/rules/
+Frontend: Next.js (App Router, TypeScript), responsive web / PWA, in frontend/
+Backend: lives in backend/, stack not chosen yet
+Skeleton built: one route per screen, rules engine stub in backend/rules/
 
 ■ MUST HAVE (the demo)
 Upload lab report → extract → verify → save

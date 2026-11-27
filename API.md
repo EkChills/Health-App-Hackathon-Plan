@@ -12,7 +12,7 @@ All data in this doc is synthetic. Never paste a real report or real patient det
 
 These follow from the plan. They are what makes "the model reads, the rules decide" true in code.
 
-1. **Only `lib/rules/` creates a `Flag`.** No endpoint takes a severity from the client, and no model output ever becomes a severity.
+1. **Only the rules engine in `backend/rules/` creates a `Flag`.** No endpoint takes a severity from the client, and no model output ever becomes a severity.
 2. **Nothing reaches the record unverified.** Extraction writes to the `Document` only. `Observation` and `Medication` rows exist only after the patient confirms on the verify screen, or types them in by hand.
 3. **The reference range comes from the report.** `refLow` / `refHigh` are what the lab printed, carried through with `refSource: "report"`. The API never fills them from its own table (one exception, blood pressure, see §8).
 4. **AI text is always labelled.** Any field written by a model is wrapped in an `AiText` object with `draft: true`. The UI renders those visibly differently. No exceptions.
@@ -25,7 +25,8 @@ These follow from the plan. They are what makes "the model reads, the rules deci
 
 | Thing | Convention |
 | --- | --- |
-| Base path | `/api` (Next.js route handlers under `app/api/`) |
+| Base path | `/api`, served by the backend in `backend/`. Its stack is not chosen yet. |
+| Same origin | The frontend proxies `/api` to the backend, so the session cookies work without cross-origin setup. A Next.js rewrite in `frontend/next.config.ts` does this. |
 | Format | JSON in and out, except the upload, which is `multipart/form-data` |
 | IDs | Opaque strings with a type prefix: `doc_…`, `obs_…`, `med_…`, `flg_…`, `shr_…`, `not_…` |
 | Times | ISO 8601 strings in UTC. The UI renders them in Africa/Lagos time. |
@@ -46,7 +47,7 @@ A clinician call with no valid grant cookie gets `401 NO_GRANT`. A patient call 
 
 ## 3. Shared types
 
-Written as TypeScript because that's what the app uses. This is the plan, not a file in the codebase yet. When the team agrees it, it moves to `lib/contract.ts` and both sides import it.
+Written as TypeScript because that's what the app uses. This is the plan, not a file in the codebase yet. When the team agrees it, it moves into code. If the backend is also TypeScript, both sides import one shared file. If not, the backend mirrors these types, and any change lands in both in the same commit.
 
 ```ts
 // ---- Markers -------------------------------------------------------------
@@ -337,7 +338,7 @@ Response `200`:
 }
 ```
 
-This is the moment the flag fires in the demo script. The handler writes the rows, calls `evaluate()` from `lib/rules/`, stores the flags and returns them in one response, so the UI can show the flag without a second request. Returns `409 ALREADY_VERIFIED` if called twice.
+This is the moment the flag fires in the demo script. The handler writes the rows, calls `evaluate()` from `backend/rules/`, stores the flags and returns them in one response, so the UI can show the flag without a second request. Returns `409 ALREADY_VERIFIED` if called twice.
 
 ### 4.5 `POST /api/observations` — manual entry
 
@@ -526,12 +527,12 @@ Returns the `Note`. The patient sees it on home and may reply once.
 
 | Workstream | Implements | Consumes |
 | --- | --- | --- |
-| **A — Extraction** | Upload, document status, verify handler's write step, explanation, summary | `lib/rules/` alias table for marker mapping |
-| **B — Rules + data** | `lib/rules/`, home, timeline, manual entry, shares, redeem, brief, flags, notes, fixtures | Verified rows from A |
+| **A — Extraction** | Upload, document status, verify handler's write step, explanation, summary | `backend/rules/` alias table for marker mapping |
+| **B — Rules + data** | `backend/rules/`, home, timeline, manual entry, shares, redeem, brief, flags, notes, fixtures | Verified rows from A |
 | **C — Patient UI** | Screens 1–4 | Every patient endpoint |
 | **D — Doctor UI** | Screens 5–7 | Every clinician endpoint |
 
-The verify handler is the one place A and B meet in a single request. A writes the observations, then calls B's `evaluate()`. Agree that function's signature first; the stub in `lib/rules/index.ts` is the starting point.
+The verify handler is the one place A and B meet in a single request. A writes the observations, then calls B's `evaluate()`. Agree that function's signature first; the stub in `backend/rules/index.ts` is the starting point.
 
 ---
 
@@ -547,10 +548,11 @@ The verify handler is the one place A and B meet in a single request. A writes t
 
 ## 9. Stubs and fixtures
 
-Until a real handler exists, each route handler returns a fixture from `lib/fixtures/` keyed by persona. Same response shapes, synthetic data, no database. B owns the fixtures and builds them from the three seeded personas.
+The backend doesn't exist yet, so the stubs live on the frontend side. The frontend's API client has one switch. In mock mode it returns fixtures from `frontend/fixtures/`, keyed by persona, instead of calling the network. Same response shapes, synthetic data, no database. When an endpoint goes live on the backend, flip that endpoint to the network. B owns the fixtures and builds them from the three seeded personas in `PERSONAS.md`.
 
 Rules for fixtures:
 
 - **Every fixture validates against the types in §3.** If the types change, the fixtures change in the same commit.
 - **Stubs simulate the slow parts.** `GET /api/documents/:id` returns `"extracting"` for the first two polls, so C builds the loading state for real.
-- **One fixture per error path the demo could hit:** expired code, claimed code, failed extraction. Those are the states that break live demos.
+- **One fixture per error path the demo could hit:** expired code, claimed code, failed extraction. Those are the states that break live demos. `PERSONAS.md` assigns each one to a persona.
+- **Fixtures never contain a flag the rules engine wouldn't raise.** Until the engine runs, B writes the expected flags by hand, then replaces them with real engine output once it exists.

@@ -358,7 +358,7 @@ You don't have a doctor on the team. That is a real constraint, not a fatal one 
 
 ## Appendix — tech notes (deliberately light)
 
-**Stack: Next.js (App Router, TypeScript)**, in this repo. A skeleton is already in place with one placeholder route per screen in §6 and the rules engine stub in `lib/rules/` — see `README.md`. Build it **responsive web / PWA** rather than desktop-only, so the mobile version later is mostly free rather than a rewrite. The only two architectural decisions that will hurt you later if you get them wrong:
+**Stack: Next.js (App Router, TypeScript) for the frontend**, in `frontend/`, with one placeholder route per screen in §6. **The backend lives in `backend/`; its stack is not chosen yet.** The rules engine stub is in `backend/rules/`. See `README.md` at the root. Build it **responsive web / PWA** rather than desktop-only, so the mobile version later is mostly free rather than a rewrite. The only two architectural decisions that will hurt you later if you get them wrong:
 
 1. **Store the structured `Observation` rows, not just the model's raw output.** Everything — charts, flags, briefs — reads from structured data. The raw extraction is an audit artifact, not the source of truth.
 2. **Put the rules engine in its own module with no model calls inside it.** It should be testable with plain fixtures. That's what makes "the rules decide" true rather than a slogan.

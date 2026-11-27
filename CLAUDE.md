@@ -97,6 +97,7 @@ The team also decided **not** to track who owns the pitch or who the clinician c
 
 1. Does anyone know a medical, pharmacy or nursing student for a 30-minute sanity check? Worth asking, but the plan must not depend on the answer.
 2. Blood pressure comes from manual entry, so there is no lab-printed range to compare against. Cite one named published guideline, or show BP unflagged? See `API.md` §8.
+3. Labs print a normal range but no danger line, so the "seek care now" banner has no source for its critical values. Cite one named published source per marker, or keep every flag at `warn` for the demo? See `PERSONAS.md` §6.
 
 ## House rules
 

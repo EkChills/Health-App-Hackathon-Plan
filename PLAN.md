@@ -255,7 +255,7 @@ The full request and response shapes are in `API.md`.
 ## 9. Timeline (3-week version — compress or pad to fit)
 
 **Days 1–2 — Decide and deploy**
-Lock the wedge. Wireframe 7 screens on paper. Write the 3 seeded personas with real clinical arcs. Ship a hello-world to a **public URL** — this is the single most important day-2 deliverable, because deployment problems always surface late and always cost more than you budget.
+Lock the wedge. Wireframe 7 screens on paper. Write the 3 seeded personas with real clinical arcs; the draft is in `PERSONAS.md`. Ship a hello-world to a **public URL** — this is the single most important day-2 deliverable, because deployment problems always surface late and always cost more than you budget.
 
 **Week 1 — The spine**
 Upload → extraction → verify → persist. Rules engine v1: reference ranges + red flags. One marker charting end-to-end. By Friday, one document should go in and come out as a flagged, charted observation.
@@ -277,7 +277,7 @@ Four parallel tracks so nobody blocks anybody:
 - **C — Patient UI:** home, upload/verify, timeline, share
 - **D — Doctor UI + pitch:** brief, notes, and the deck / script / demo video
 
-Agree the **API contract between A/B and C/D on day 2** and stub it, so the frontend never waits on the backend. The draft is in `API.md`. It still needs one team decision: where blood pressure thresholds come from, since manual entry has no lab-printed range.
+Agree the **API contract between A/B and C/D on day 2** and stub it, so the frontend never waits on the backend. The draft is in `API.md`. It still needs two team decisions. First, where blood pressure thresholds come from, since manual entry has no lab-printed range. Second, where the critical lines for the "seek care now" banner come from, since labs print a normal range but not a danger line. See `PERSONAS.md` §6.
 
 ---
 

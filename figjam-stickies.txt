@@ -129,10 +129,12 @@ ShareGrant + AuditLog = the two tables that prove you thought about consent
 
 ■ TIMELINE
 DAYS 1–2: lock the wedge, wireframe 7 screens on paper, write 3 personas
+Persona draft is in PERSONAS.md — Amara (stage), Babatunde (no documents), Efe (Pidgin)
 DAYS 1–2: SHIP A PUBLIC URL. Day 2, not day 20.
 DAY 2: agree the API contract and stub it so frontend never waits on backend
 API contract draft is in API.md — needs sign-off from all four workstreams
 OPEN: blood pressure has no printed range — where do its thresholds come from?
+OPEN: labs print no danger line — where does "seek care now" get its critical values?
 WEEK 1: upload → extract → verify → persist. Ranges + red flags. One chart.
 WEEK 1 EXIT: one document goes in, comes out flagged and charted
 WEEK 2: share grant, doctor brief, interactions, prescriptions, audit log

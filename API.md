@@ -542,7 +542,8 @@ The verify handler is the one place A and B meet in a single request. A writes t
    - **(Recommended)** Use thresholds from one named, published hypertension guideline, store them as `refSource: "guideline"`, and show "Thresholds from [guideline name], not from your doctor" in the UI. That cites an authority rather than claiming one. Ask the medical student contact to sanity-check the numbers if one turns up.
    - Show blood pressure as a chart with no flags at all. Safe, but the demo loses a flag on the second input path.
 2. **Should-have endpoints.** Flag review, notes and replies are should-haves in `PLAN.md` §5. Stub them on day 2 anyway so the shape is fixed, but don't build them until week 3 is calm.
-3. **Confidence threshold.** `0.85` is a guess. A should tune it on the real redacted reports in week 1.
+3. **Critical thresholds.** A `critical` flag drives the "seek care now" banner, but labs print a normal range, not a danger line. Until the team decides where critical lines come from, no fixture contains a `critical` flag. See `PERSONAS.md` §6.
+4. **Confidence threshold.** `0.85` is a guess. A should tune it on the real redacted reports in week 1.
 
 ---
 
